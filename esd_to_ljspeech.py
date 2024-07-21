@@ -37,7 +37,7 @@ def move_metadata(esd_dir: str, output_dir: str):
                 ),
             ]
         )
-    esd = esd.loc[esd[2] == "Angry"]
+    esd = esd.loc[esd[2] == "Angry"] + esd.loc[esd[2] == "Happy"]
     esd.to_csv(
         "{0}/metadata.csv".format(output_dir),
         header=None,
@@ -51,14 +51,15 @@ def move_audio(esd_dir: str, output_dir: str):
     Moves all audio file to LJSpeech formatted ESD folder
     """
     WAVS_DIR = "{0}/wavs".format(output_dir)
-    EMOTION = "Angry"
+    EMOTIONS = ["Angry", "Happy"]
 
     for speaker in speakers_list:
-        shutil.copytree(
-            "{0}/{1}/{2}".format(esd_dir, speaker, EMOTION),
-            WAVS_DIR,
-            dirs_exist_ok=True,
-        )
+        for emotion in EMOTIONS:
+            shutil.copytree(
+                "{0}/{1}/{2}".format(esd_dir, speaker, emotion),
+                WAVS_DIR,
+                dirs_exist_ok=True,
+            )
 
 
 """
