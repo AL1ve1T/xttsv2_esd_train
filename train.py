@@ -1,6 +1,8 @@
 import os
 import argparse
 from trainer import Trainer, TrainerArgs
+import torch
+from torch import nn
 
 from TTS.config.shared_configs import BaseDatasetConfig
 from TTS.tts.datasets import load_tts_samples
@@ -109,6 +111,37 @@ SPEAKER_REFERENCE = [
 LANGUAGE = config_dataset.language
 
 
+def change_model_shape(pre_model: dict):
+    new_vocabulary_size = 6683
+    # text_head.weight
+    new_tensor = nn.Parameter(torch.randn(new_vocabulary_size, 1024))
+    old_weights = pre_model["model"]["gpt.text_head.weight"].data
+    new_tensor.data[: old_weights.size(0), : old_weights.size(1)] = old_weights
+    pre_model["model"]["gpt.text_head.weight"] = new_tensor
+    # text_head.bias
+    new_tensor = nn.Parameter(torch.randn(new_vocabulary_size))
+    old_weights = pre_model["model"]["gpt.text_head.bias"].data
+    new_tensor.data[: old_weights.size(0), : old_weights.size(1)] = old_weights
+    pre_model["model"]["gpt.text_head.bias"] = new_tensor
+    # text_embedding.weight
+    new_tensor = nn.Parameter(torch.randn(new_vocabulary_size, 1024))
+    old_weights = pre_model["model"]["gpt.text_embedding.weight"].data
+    new_tensor.data[: old_weights.size(0), : old_weights.size(1)] = old_weights
+    pre_model["model"]["gpt.text_embedding.weight"] = new_tensor
+
+
+def change_embedding_output_dim(model: GPTTrainer):
+    new_vocabulary_size = 6683
+    new_embedding = nn.Embedding(new_vocabulary_size, 1024)
+
+    old_embedding_weights = model.xtts.gpt.text_embedding.weight.data
+    new_embedding.weight.data[
+        : old_embedding_weights.size(0), : old_embedding_weights.size(1)
+    ] = old_embedding_weights
+
+    model.xtts.gpt.text_embedding = new_embedding
+
+
 def main():
     # init args and config
     model_args = GPTArgs(
@@ -182,8 +215,12 @@ def main():
         ],
     )
 
-    # init the model from config
-    model = GPTTrainer.init_from_config(config)
+    # init the model from config, but first change embedding size
+    # pre_model = torch.load(XTTS_CHECKPOINT)
+    # change_model_shape(pre_model)
+
+    model = GPTTrainer.init_from_config(config)  # 5753, 6152
+    # change_embedding_output_dim(model)
 
     # load training samples
     train_samples, eval_samples = load_tts_samples(

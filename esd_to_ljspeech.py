@@ -39,8 +39,7 @@ def move_metadata(esd_dir: str, output_dir: str):
         )
     esd = esd.loc[esd[2] == "Angry"].append(esd.loc[esd[2] == "Happy"])
     for _, row in esd.iterrows():
-        row[1] += "[{0}]".format(row[2].lower())
-    esd = esd.drop(columns=[2])
+        row[2] = "[{0}]".format(row[2].upper()) + " " + row[1]
     esd.to_csv(
         "{0}/metadata.csv".format(output_dir),
         header=None,
