@@ -111,25 +111,6 @@ SPEAKER_REFERENCE = [
 LANGUAGE = config_dataset.language
 
 
-def change_model_shape(pre_model: dict):
-    new_vocabulary_size = 6683
-    # text_head.weight
-    new_tensor = nn.Parameter(torch.randn(new_vocabulary_size, 1024))
-    old_weights = pre_model["model"]["gpt.text_head.weight"].data
-    new_tensor.data[: old_weights.size(0), : old_weights.size(1)] = old_weights
-    pre_model["model"]["gpt.text_head.weight"] = new_tensor
-    # text_head.bias
-    new_tensor = nn.Parameter(torch.randn(new_vocabulary_size))
-    old_weights = pre_model["model"]["gpt.text_head.bias"].data
-    new_tensor.data[: old_weights.size(0), : old_weights.size(1)] = old_weights
-    pre_model["model"]["gpt.text_head.bias"] = new_tensor
-    # text_embedding.weight
-    new_tensor = nn.Parameter(torch.randn(new_vocabulary_size, 1024))
-    old_weights = pre_model["model"]["gpt.text_embedding.weight"].data
-    new_tensor.data[: old_weights.size(0), : old_weights.size(1)] = old_weights
-    pre_model["model"]["gpt.text_embedding.weight"] = new_tensor
-
-
 def change_embedding_output_dim(model: GPTTrainer):
     new_vocabulary_size = 6683
     new_embedding = nn.Embedding(new_vocabulary_size, 1024)
@@ -203,23 +184,34 @@ def main():
         },
         test_sentences=[
             {
-                "text": "It took me quite a long time to develop a voice, and now that I have it I'm not going to be silent.",
+                "text": "[NEUTRAL] It took me quite a long time to develop a voice, and now that I have it I'm not going to be silent.",
                 "speaker_wav": SPEAKER_REFERENCE,
                 "language": LANGUAGE,
             },
             {
-                "text": "This cake is great. It's so delicious and moist.",
+                "text": "[HAPPY] This cake is great. It's so delicious and moist.",
+                "speaker_wav": SPEAKER_REFERENCE,
+                "language": LANGUAGE,
+            },
+            {
+                "text": "[ANGRY] I am really disappointed in you right now.",
+                "speaker_wav": SPEAKER_REFERENCE,
+                "language": LANGUAGE,
+            },
+            {
+                "text": "[SAD] It hurts to see things fall apart like this.",
+                "speaker_wav": SPEAKER_REFERENCE,
+                "language": LANGUAGE,
+            },
+            {
+                "text": "[SURPRISE] This is such an unexpected turn of events!",
                 "speaker_wav": SPEAKER_REFERENCE,
                 "language": LANGUAGE,
             },
         ],
     )
 
-    # init the model from config, but first change embedding size
-    # pre_model = torch.load(XTTS_CHECKPOINT)
-    # change_model_shape(pre_model)
-
-    model = GPTTrainer.init_from_config(config)  # 5753, 6152
+    model = GPTTrainer.init_from_config(config)  # 5753, 6152, 6540, 6541, 6542
     # change_embedding_output_dim(model)
 
     # load training samples

@@ -141,7 +141,7 @@
         {
             "id": 5022,
             "special": true,
-            "content": "[ar]",
+            "content": "[surprise]",
             "single_word": false,
             "lstrip": false,
             "rstrip": false,
@@ -159,7 +159,7 @@
         {
             "id": 5412,
             "special": true,
-            "content": "[ja]",
+            "content": "[sad]",
             "single_word": false,
             "lstrip": false,
             "rstrip": false,
@@ -186,7 +186,7 @@
         {
             "id": 6680,
             "special": true,
-            "content": "[hi]",
+            "content": "[neutral]",
             "single_word": false,
             "lstrip": false,
             "rstrip": false,
@@ -5229,7 +5229,7 @@
             "qin1": 5019,
             "tiao2": 5020,
             "zhan3": 5021,
-            "[ar]": 5022,
+            "[surprise]": 5022,
             "[zh-cn]": 5023,
             "¡": 5024,
             "é": 5025,
@@ -5619,7 +5619,7 @@
             "mise": 5409,
             "mokuteki": 5410,
             "dakara": 5411,
-            "[ja]": 5412,
+            "[sad]": 5412,
             "ő": 5413,
             "ű": 5414,
             "そ": 5415,
@@ -6887,7 +6887,7 @@
             "पूर्ण": 6677,
             "समा": 6678,
             "कारी": 6679,
-            "[hi]": 6680
+            "[neutral]": 6680
         },
         "merges": [
             "t h",
