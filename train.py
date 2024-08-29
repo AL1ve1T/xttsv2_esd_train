@@ -16,15 +16,23 @@ from TTS.utils.manage import ModelManager
 
 """
     Argument list: 
-        --esd_dir - ESD input dir
+        --train_dir - Training dataset directory
+        --eval_dir - Evaluation dataset directory
 """
 
 parser = argparse.ArgumentParser()
 parser.add_argument(
-    "--esd_dir",
-    dest="esd_dir",
+    "--train_dir",
+    dest="train_dir",
     type=str,
-    help="Path to the ESD input dir",
+    help="Path to the training dataset dir",
+    required=True,
+)
+parser.add_argument(
+    "--eval_dir",
+    dest="eval_dir",
+    type=str,
+    help="Path to the evaluation dataset dir",
     required=True,
 )
 args = parser.parse_args()
@@ -50,13 +58,22 @@ GRAD_ACUMM_STEPS = 84  # set here the grad accumulation steps
 config_dataset = BaseDatasetConfig(
     formatter="ljspeech",
     dataset_name="ljspeech",
-    path="{0}".format(args.esd_dir),
-    meta_file_train="{0}/metadata.csv".format(args.esd_dir),
+    path="{0}".format(args.train_dir),
+    meta_file_train="{0}/metadata.csv".format(args.train_dir),
+    language="en",
+)
+
+config_dataset_eval = BaseDatasetConfig(
+    formatter="ljspeech",
+    dataset_name="ljspeech",
+    path="{0}".format(args.eval_dir),
+    meta_file_train="{0}/metadata.csv".format(args.eval_dir),
     language="en",
 )
 
 # Add here the configs of the datasets
 DATASETS_CONFIG_LIST = [config_dataset]
+DATASETS_CONFIG_LIST_EVAL = [config_dataset_eval]
 
 # Define the path where XTTS v2.0.1 files will be downloaded
 CHECKPOINTS_OUT_PATH = os.path.join(OUT_PATH, "XTTS_v2.0_original_model_files/")
@@ -203,11 +220,6 @@ def main():
                 "speaker_wav": SPEAKER_REFERENCE,
                 "language": LANGUAGE,
             },
-            {
-                "text": "[SURPRISE] This is such an unexpected turn of events!",
-                "speaker_wav": SPEAKER_REFERENCE,
-                "language": LANGUAGE,
-            },
         ],
     )
 
@@ -215,12 +227,8 @@ def main():
     # change_embedding_output_dim(model)
 
     # load training samples
-    train_samples, eval_samples = load_tts_samples(
-        DATASETS_CONFIG_LIST,
-        eval_split=True,
-        eval_split_max_size=config.eval_split_max_size,
-        eval_split_size=config.eval_split_size,
-    )
+    train_samples, _ = load_tts_samples(DATASETS_CONFIG_LIST, eval_split=False)
+    eval_samples, _ = load_tts_samples(DATASETS_CONFIG_LIST_EVAL, eval_split=False)
 
     # init the trainer and 🚀
     trainer = Trainer(
@@ -239,4 +247,5 @@ def main():
     trainer.fit()
 
 
-main()
+if __name__ == "__main__":
+    main()
