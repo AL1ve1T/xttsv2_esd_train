@@ -123,7 +123,23 @@ if not os.path.isfile(TOKENIZER_FILE) or not os.path.isfile(XTTS_CHECKPOINT):
 # Training sentences generations
 SPEAKER_REFERENCE = [
     os.path.dirname(os.path.abspath(__file__))
-    + "/LJ001-0003.wav"  # speaker reference to be used in training test sentences
+    + "/speakers/Ses01F_impro05_M016.wav"  # speaker reference to be used in training test sentences
+]
+ANGER_SPEAKER_REFERENCE = [
+    os.path.dirname(os.path.abspath(__file__))
+    + "/speakers/ANG_Ses05M_script02_2_M024.wav"  # speaker reference to be used in training test sentences
+]
+HAPPY_SPEAKER_REFERENCE = [
+    os.path.dirname(os.path.abspath(__file__))
+    + "/speakers/HAP_Ses05M_script02_2_M035.wav"  # speaker reference to be used in training test sentences
+]
+NEUTRAL_SPEAKER_REFERENCE = [
+    os.path.dirname(os.path.abspath(__file__))
+    + "/speakers/NEU_Ses05M_script03_2_M024.wav"  # speaker reference to be used in training test sentences
+]
+SAD_SPEAKER_REFERENCE = [
+    os.path.dirname(os.path.abspath(__file__))
+    + "/speakers/SAD_Ses05F_script01_3_M031.wav"  # speaker reference to be used in training test sentences
 ]
 LANGUAGE = config_dataset.language
 
@@ -201,23 +217,23 @@ def main():
         },
         test_sentences=[
             {
-                "text": "[NEUTRAL] It took me quite a long time to develop a voice, and now that I have it I'm not going to be silent.",
-                "speaker_wav": SPEAKER_REFERENCE,
+                "text": "[ANGRY] Well, welcome to the human race.  Do you think this is what I had planned?  Do you think that when I proposed that I had this great fantasy going that four years down the road we would end up arguing on the beach over some fish?",
+                "speaker_wav": ANGER_SPEAKER_REFERENCE,
                 "language": LANGUAGE,
             },
             {
-                "text": "[HAPPY] This cake is great. It's so delicious and moist.",
-                "speaker_wav": SPEAKER_REFERENCE,
+                "text": "[HAPPY] I don't know.  I think this is a pretty good spot.  I mean, look at the view of the moon from here.",
+                "speaker_wav": HAPPY_SPEAKER_REFERENCE,
                 "language": LANGUAGE,
             },
             {
-                "text": "[ANGRY] I am really disappointed in you right now.",
-                "speaker_wav": SPEAKER_REFERENCE,
+                "text": "[NEUTRAL] So, did you see much of Peter Burden after the divorce?",
+                "speaker_wav": NEUTRAL_SPEAKER_REFERENCE,
                 "language": LANGUAGE,
             },
             {
-                "text": "[SAD] It hurts to see things fall apart like this.",
-                "speaker_wav": SPEAKER_REFERENCE,
+                "text": "[SAD] And I got an ideal, watching them all go down.  Everything was being destroyed see and-",
+                "speaker_wav": SAD_SPEAKER_REFERENCE,
                 "language": LANGUAGE,
             },
         ],
