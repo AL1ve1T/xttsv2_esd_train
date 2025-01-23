@@ -123,7 +123,7 @@ if not os.path.isfile(TOKENIZER_FILE) or not os.path.isfile(XTTS_CHECKPOINT):
 # Training sentences generations
 SPEAKER_REFERENCE = [
     os.path.dirname(os.path.abspath(__file__))
-    + "/speakers/Ses01F_impro05_M016.wav"  # speaker reference to be used in training test sentences
+    + "/speakers/LJ001-0003.wav"  # speaker reference to be used in training test sentences
 ]
 ANGER_SPEAKER_REFERENCE = [
     os.path.dirname(os.path.abspath(__file__))
@@ -131,7 +131,7 @@ ANGER_SPEAKER_REFERENCE = [
 ]
 HAPPY_SPEAKER_REFERENCE = [
     os.path.dirname(os.path.abspath(__file__))
-    + "/speakers/HAP_Ses05M_script02_2_M035.wav"  # speaker reference to be used in training test sentences
+    + "/speakers/HAP_Ses05M_impro03_M007.wav"  # speaker reference to be used in training test sentences
 ]
 NEUTRAL_SPEAKER_REFERENCE = [
     os.path.dirname(os.path.abspath(__file__))
@@ -222,7 +222,7 @@ def main():
                 "language": LANGUAGE,
             },
             {
-                "text": "[HAPPY] I don't know.  I think this is a pretty good spot.  I mean, look at the view of the moon from here.",
+                "text": "[HAPPY] You know- we did some- you know some rock climbing up the waterfalls and went up to this little pool that was up there.  And then, I- it's great. Um- You have to climb this little rock-",
                 "speaker_wav": HAPPY_SPEAKER_REFERENCE,
                 "language": LANGUAGE,
             },
