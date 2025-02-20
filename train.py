@@ -217,22 +217,22 @@ def main():
         },
         test_sentences=[
             {
-                "text": "[ANGRY] Well, welcome to the human race.  Do you think this is what I had planned?  Do you think that when I proposed that I had this great fantasy going that four years down the road we would end up arguing on the beach over some fish?",
+                "text": "[angry] Well, welcome to the human race.  Do you think this is what I had planned?  Do you think that when I proposed that I had this great fantasy going that four years down the road we would end up arguing on the beach over some fish?",
                 "speaker_wav": ANGER_SPEAKER_REFERENCE,
                 "language": LANGUAGE,
             },
             {
-                "text": "[HAPPY] You know- we did some- you know some rock climbing up the waterfalls and went up to this little pool that was up there.  And then, I- it's great. Um- You have to climb this little rock-",
+                "text": "[happy] You know- we did some- you know some rock climbing up the waterfalls and went up to this little pool that was up there.  And then, I- it's great. Um- You have to climb this little rock-",
                 "speaker_wav": HAPPY_SPEAKER_REFERENCE,
                 "language": LANGUAGE,
             },
             {
-                "text": "[NEUTRAL] So, did you see much of Peter Burden after the divorce?",
+                "text": "So, did you see much of Peter Burden after the divorce?",
                 "speaker_wav": NEUTRAL_SPEAKER_REFERENCE,
                 "language": LANGUAGE,
             },
             {
-                "text": "[SAD] And I got an ideal, watching them all go down.  Everything was being destroyed see and-",
+                "text": "[sad] And I got an ideal, watching them all go down.  Everything was being destroyed see and-",
                 "speaker_wav": SAD_SPEAKER_REFERENCE,
                 "language": LANGUAGE,
             },
