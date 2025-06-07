@@ -168,7 +168,7 @@
         {
             "id": 5753,
             "special": true,
-            "content": "[angry]",
+            "content": "[ang]",
             "single_word": false,
             "lstrip": false,
             "rstrip": false,
@@ -177,7 +177,7 @@
         {
             "id": 6152,
             "special": true,
-            "content": "[happy]",
+            "content": "[hap]",
             "single_word": false,
             "lstrip": false,
             "rstrip": false,
@@ -186,7 +186,7 @@
         {
             "id": 6680,
             "special": true,
-            "content": "[neutral]",
+            "content": "[neu]",
             "single_word": false,
             "lstrip": false,
             "rstrip": false,
@@ -5960,7 +5960,7 @@
             "rész": 5750,
             "kér": 5751,
             "ével": 5752,
-            "[angry]": 5753,
+            "[ang]": 5753,
             "%": 5754,
             "0": 5755,
             "6": 5756,
@@ -6359,7 +6359,7 @@
             "dolog": 6149,
             "neung": 6150,
             "modu": 6151,
-            "[happy]": 6152,
+            "[hap]": 6152,
             "\u0014": 6153,
             "\u0016": 6154,
             "$": 6155,
@@ -6887,7 +6887,7 @@
             "पूर्ण": 6677,
             "समा": 6678,
             "कारी": 6679,
-            "[neutral]": 6680
+            "[neu]": 6680
         },
         "merges": [
             "t h",

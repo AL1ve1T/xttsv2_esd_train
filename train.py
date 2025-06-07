@@ -178,6 +178,21 @@ def main():
     audio_config = XttsAudioConfig(
         sample_rate=22050, dvae_sample_rate=22050, output_sample_rate=24000
     )
+    # load training samples
+    train_samples, _ = load_tts_samples(DATASETS_CONFIG_LIST, eval_split=False)
+    eval_samples, _ = load_tts_samples(DATASETS_CONFIG_LIST_EVAL, eval_split=False)
+
+    # build test_sentences array
+    test_sentences = []
+    for sample in eval_samples:
+        test_sentences.append(
+            {
+                "text": sample["text"],
+                "speaker_wav": sample["audio_file"],
+                "language": LANGUAGE,
+            }
+        )
+
     # training parameters config
     config = GPTTrainerConfig(
         output_path=OUT_PATH,
@@ -211,40 +226,15 @@ def main():
         lr_scheduler="MultiStepLR",
         # it was adjusted accordly for the new step scheme
         lr_scheduler_params={
-            "milestones": [50000 * 18, 150000 * 18, 300000 * 18],
+            "milestones": [10000 * 18, 30000 * 18, 70000 * 18],
             "gamma": 0.5,
             "last_epoch": -1,
         },
-        test_sentences=[
-            {
-                "text": "[angry] Well, welcome to the human race.  Do you think this is what I had planned?  Do you think that when I proposed that I had this great fantasy going that four years down the road we would end up arguing on the beach over some fish?",
-                "speaker_wav": ANGER_SPEAKER_REFERENCE,
-                "language": LANGUAGE,
-            },
-            {
-                "text": "[happy] You know- we did some- you know some rock climbing up the waterfalls and went up to this little pool that was up there.  And then, I- it's great. Um- You have to climb this little rock-",
-                "speaker_wav": HAPPY_SPEAKER_REFERENCE,
-                "language": LANGUAGE,
-            },
-            {
-                "text": "So, did you see much of Peter Burden after the divorce?",
-                "speaker_wav": NEUTRAL_SPEAKER_REFERENCE,
-                "language": LANGUAGE,
-            },
-            {
-                "text": "[sad] And I got an ideal, watching them all go down.  Everything was being destroyed see and-",
-                "speaker_wav": SAD_SPEAKER_REFERENCE,
-                "language": LANGUAGE,
-            },
-        ],
+        test_sentences=test_sentences,
     )
 
     model = GPTTrainer.init_from_config(config)  # 5753, 6152, 6540, 6541, 6542
     # change_embedding_output_dim(model)
-
-    # load training samples
-    train_samples, _ = load_tts_samples(DATASETS_CONFIG_LIST, eval_split=False)
-    eval_samples, _ = load_tts_samples(DATASETS_CONFIG_LIST_EVAL, eval_split=False)
 
     # init the trainer and 🚀
     trainer = Trainer(
