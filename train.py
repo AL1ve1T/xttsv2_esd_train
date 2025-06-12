@@ -1,6 +1,7 @@
 import os
 import argparse
 from trainer import Trainer, TrainerArgs
+from tokenizers import Tokenizer
 import torch
 from torch import nn
 
@@ -50,8 +51,8 @@ OUT_PATH = os.path.join(os.path.dirname(os.path.abspath(__file__)), "run", "trai
 # Training Parameters
 OPTIMIZER_WD_ONLY_ON_WEIGHTS = True  # for multi-gpu training please make it False
 START_WITH_EVAL = True  # if True it will star with evaluation
-BATCH_SIZE = 3  # set here the batch size
-GRAD_ACUMM_STEPS = 84  # set here the grad accumulation steps
+BATCH_SIZE = 32  # set here the batch size
+GRAD_ACUMM_STEPS = 21  # set here the grad accumulation steps
 # Note: we recommend that BATCH_SIZE * GRAD_ACUMM_STEPS need to be at least 252 for more efficient training. You can increase/decrease BATCH_SIZE but then set GRAD_ACUMM_STEPS accordingly.
 
 # Define here the dataset that you want to use for the fine-tuning on.
@@ -144,16 +145,30 @@ SAD_SPEAKER_REFERENCE = [
 LANGUAGE = config_dataset.language
 
 
-def change_embedding_output_dim(model: GPTTrainer):
-    new_vocabulary_size = 6683
-    new_embedding = nn.Embedding(new_vocabulary_size, 1024)
+def freeze_everything_except(model, keep_keywords=("xtts.gpt.text_embedding.weight",)):
+    """
+    Sets requires_grad=False for all parameters *unless* the
+    parameter name contains one of the `keep_keywords`.
+    """
+    for n, p in model.named_parameters():
+        p.requires_grad = any(kw in n for kw in keep_keywords)
 
-    old_embedding_weights = model.xtts.gpt.text_embedding.weight.data
-    new_embedding.weight.data[
-        : old_embedding_weights.size(0), : old_embedding_weights.size(1)
-    ] = old_embedding_weights
 
-    model.xtts.gpt.text_embedding = new_embedding
+def resize_text_embedding(model, tokenizer_path):
+    tokenizer = Tokenizer.from_file(tokenizer_path)
+    new_vocab_size = tokenizer.get_vocab_size()
+
+    old_num_embeddings, emb_dim = model.xtts.gpt.text_embedding.weight.shape
+    if new_vocab_size == old_num_embeddings:
+        return
+
+    new_embed = nn.Embedding(new_vocab_size, emb_dim)
+    with torch.no_grad():
+        new_embed.weight[:old_num_embeddings] = model.xtts.gpt.text_embedding.weight
+    model.xtts.gpt.text_embedding = new_embed
+    print(
+        f" > Resized text embedding from {old_num_embeddings} to {new_vocab_size} tokens."
+    )
 
 
 def main():
@@ -222,7 +237,7 @@ def main():
         optimizer="AdamW",
         optimizer_wd_only_on_weights=OPTIMIZER_WD_ONLY_ON_WEIGHTS,
         optimizer_params={"betas": [0.9, 0.96], "eps": 1e-8, "weight_decay": 1e-2},
-        lr=5e-06,  # learning rate
+        lr=5e-05,  # learning rate
         lr_scheduler="MultiStepLR",
         # it was adjusted accordly for the new step scheme
         lr_scheduler_params={
@@ -234,7 +249,10 @@ def main():
     )
 
     model = GPTTrainer.init_from_config(config)  # 5753, 6152, 6540, 6541, 6542
-    # change_embedding_output_dim(model)
+    # resize_text_embedding(
+    #     model, TOKENIZER_FILE
+    # )  # resize text embedding to match the tokenizer size
+    freeze_everything_except(model)
 
     # init the trainer and 🚀
     trainer = Trainer(
