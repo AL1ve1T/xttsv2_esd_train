@@ -145,7 +145,15 @@ SAD_SPEAKER_REFERENCE = [
 LANGUAGE = config_dataset.language
 
 
-def freeze_everything_except(model, keep_keywords=("xtts.gpt.text_embedding.weight",)):
+def freeze_everything_except(
+    model,
+    keep_keywords=(
+        "xtts.gpt.text_embedding",
+        "xtts.gpt.text_pos_embedding",
+        "xtts.gpt.gpt",  # the 30 transformer blocks
+        "xtts.gpt.text_head",
+    ),
+):
     """
     Sets requires_grad=False for all parameters *unless* the
     parameter name contains one of the `keep_keywords`.
